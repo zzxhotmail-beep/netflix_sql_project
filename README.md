@@ -1,16 +1,18 @@
-# Netflix Movies and TV Shows Data Analysis | SQL Data Analyst Portfolio
+# Netflix Content Analysis | SQL Portfolio Project
 ![Netflix Logo](https://cdn.jsdelivr.net/gh/zzxhotmail-beep/netflix_sql_project@main/logo.png)
 
 ## Project Overview
 
-This project involves a comprehensive analysis of Netflix's movies and TV shows data using SQL. The goal is to extract valuable insights and answer various business questions based on the dataset. The following README provides a detailed account of the project's objectives, business problems, solutions, findings, and conclusions.
+This project analyzes Netflix’s content catalog using SQL in PostgreSQL to uncover patterns in content distribution, audience targeting, and production trends.
+
+The analysis focuses on transforming raw data into actionable insights that could support content strategy and platform decision-making.
 
 ## Core Objectives
 
-- Analyze the distribution of content types (movies vs TV shows).
-- Identify the most common ratings for movies and TV shows.
-- List and analyze content based on release years, countries, and durations.
-- Explore and categorize content based on specific criteria and keywords.
+- Understand the balance between movies and TV shows on the platform.
+- Identify dominant content ratings and their implications for target audiences.
+- Analyze trends across release years, countries, and content duration.
+- Explore content themes and categorize titles based on keywords and metadata.
 
 ## Dataset
 
@@ -19,107 +21,66 @@ The data for this project is sourced from the Kaggle dataset:
 
 ## Technical Skills Demonstrated
 
-- **SQL (PostgreSQL)**: Database creation, table design, data population
-- **Data Cleaning**: Handling null/missing values for data integrity
-- **Exploratory Data Analysis (EDA)**: Aggregate functions, DISTINCT counts, and trend analysis
-- **Advanced SQL Techniques**: Window functions (RANK), CTEs, CASE statements, GROUP BY, filtering
-- **Business Acumen**: Translating business questions into SQL queries and deriving actionable insights
+- **SQL (PostgreSQL)**: Performed data extraction, transformation, and analysis on structured datasets.
+- **Exploratory Data Analysis (EDA)**: Uncovered trends and patterns through exploratory analysis and aggregation techniques.
+- **Advanced SQL Techniques**: Utilized CTEs, window functions, and CASE statements for complex querying.
+- **Business Acumen**: Converted business requirements into analytical queries to support decision-making.
 
-## Project Structure
+## Database Setup
 
-### 1. Database Setup
-
-- **Database Creation**: The project starts by creating a database named `sql_project_p1`.
-- **Table Creation**: A table named `retail_sales` is created to store the sales data. The table structure includes columns for transaction ID, sale date, sale time, customer ID, gender, age, product category, quantity sold, price per unit, cost of goods sold (COGS), and total sale amount.
+- **Data Structuring**: Created a `netflix` table to organize content metadata with key attributes (e.g., content type, release year, rating, country, and genre), enabling efficient querying and analysis.
 
 ```sql
-CREATE DATABASE sql_project_p1;
-
-DROP TABLE IF EXISTS retail_sales;
-CREATE TABLE retail_sales
-  (
-	transactions_id INT PRIMARY KEY,
-	sale_date	DATE,
-	sale_time	TIME,
-	customer_id	INT,
-	gender	VARCHAR(15),
-	age	INT,
-	category VARCHAR(15),	
-	quantiy	INT,
-	price_per_unit	FLOAT,
-	cogs	FLOAT,
-	total_sale FLOAT
-  );
+CREATE TABLE netflix
+(
+	show_id	VARCHAR(6),
+	type    VARCHAR(10),
+	title	VARCHAR(250),
+	director VARCHAR(550),
+	casts	VARCHAR(1050),
+	country	VARCHAR(550),
+	date_added	VARCHAR(55),
+	release_year	INT,
+	rating	VARCHAR(15),
+	duration	VARCHAR(15),
+	listed_in	VARCHAR(250),
+	description VARCHAR(550)
+);
 ```
 
-### 2. Data Exploration & Cleaning
-
-- **Record Count**: Determine the total number of records in the dataset.
-- **Customer Count**: Find out how many unique customers are in the dataset.
-- **Category Count**: Identify all unique product categories in the dataset.
-- **Null Value Check**: Check for any null values in the dataset and delete records with missing data.
-
+## Business Problems and Solutions
+### 1. Content Distribution Analysis.
+- **Objective**: Evaluate the distribution of Movies vs TV Shows on Netflix
 ```sql
-SELECT COUNT(*) FROM retail_sales;
-SELECT COUNT(DISTINCT customer_id) FROM retail_sales;
-SELECT DISTINCT category FROM retail_sales;
-
-SELECT * FROM retail_sales
-WHERE 
-    transactions_id IS NULL
-    OR
-    sale_date IS NULL
-    OR 
-    sale_time IS NULL
-    OR
-    gender IS NULL
-    OR
-    category IS NULL
-    OR
-    quantiy IS NULL
-    OR
-    cogs IS NULL
-    OR
-    total_sale IS NULL;
-
-DELETE FROM retail_sales
-WHERE 
-    transactions_id IS NULL
-    OR
-    sale_date IS NULL
-    OR 
-    sale_time IS NULL
-    OR
-    gender IS NULL
-    OR
-    category IS NULL
-    OR
-    quantiy IS NULL
-    OR
-    cogs IS NULL
-    OR
-    total_sale IS NULL;
+SELECT type,COUNT(type) as total_content
+FROM netflix
+GROUP BY type;
 ```
+- **Insight**: Movies dominate the catalog, indicating a stronger focus on standalone content
 
-### 3. Data Analysis & Findings
-
-The following SQL queries were developed to answer specific business questions:
-
-1. **Write a SQL query to retrieve all columns for sales made on '2022-11-05'**:
+### 2. Rating Distribution Analysis
+- **Objective**: Identify the most common content ratings across Movies and TV Shows
 ```sql
-SELECT * 
-FROM retail_sales
-where sale_date = '2022-11-05'
+WITH RatingCounts AS (
+    SELECT 
+        type,
+        rating,
+        COUNT(*) AS rating_count
+    FROM netflix
+    GROUP BY type, rating
+),
+RankedRatings AS (
+    SELECT 
+        type,
+        rating,
+        rating_count,
+        RANK() OVER (PARTITION BY type ORDER BY rating_count DESC) AS rank
+    FROM RatingCounts
+)
+SELECT 
+    type,
+    rating AS most_frequent_rating
+FROM RankedRatings
+WHERE rank = 1;
 ```
-
-2. **Write a SQL query to retrieve all transactions where the category is 'Clothing' and the quantity sold is more than 4 in the month of Nov-2022**:
-```sql
-SELECT *
-FROM retail_sales
-WHERE 
-    category = 'Clothing'
-    AND 
-    TO_CHAR(sale_date, 'YYYY-MM') = '2022-11'
-    AND
-    quantiy >= 4
-```
+- **Insight**: "TV-MA" is the most common rating, suggesting a strong presence of mature content
