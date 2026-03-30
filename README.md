@@ -49,7 +49,8 @@ CREATE TABLE netflix
 ```
 
 ## Business Problems and Solutions
-### 1. Content Distribution Analysis.
+These analyses demonstrate SQL proficiency in handling real-world datasets, including data cleaning, transformation, and business-driven insights generation.
+### 1. Content Distribution Analysis
 - **Objective**: Evaluate the distribution of Movies vs TV Shows on Netflix
 ```sql
 SELECT type,COUNT(type) as total_content
@@ -84,3 +85,146 @@ FROM RankedRatings
 WHERE rank = 1;
 ```
 - **Insight**: "TV-MA" is the most common rating, suggesting a strong presence of mature content
+
+### 3. Release Year Analysis
+- **Objective**: Analyze content released in a specific year (e.g., 2020)
+```sql
+SELECT title
+FROM netflix
+WHERE type='Movie' AND release_year = 2020;
+```
+- **Insight**: Content production remains high in recent years, reflecting Netflix’s expansion
+
+### 4. Geographical Distribution Analysis
+- **Objective**: Identify top content-producing countries
+```sql
+SELECT country,COUNT(*) as total_content
+FROM netflix
+WHERE country IS NOT NULL
+GROUP BY country
+ORDER BY total_content DESC
+LIMIT 5;
+```
+- **Insight**: The U.S. leads production, with increasing contributions from India, the U.K., and Asia(Japan and South Korea)
+
+### 5. Content Duration Analysis
+- **Objective**: Identify the longest movie in the dataset
+```sql
+SELECT title, duration
+FROM netflix
+WHERE type='Movie' AND duration IS NOT NULL
+ORDER BY SPLIT_PART(duration, ' ', 1)::INT DESC
+LIMIT 1;
+```
+- **Insight**: *Black Mirror: Bandersnatch* stands out as the longest movie record in the dataset, featuring an exceptional runtime of 312 minutes as an interactive special.
+
+### 6. Recent Content Trends
+- **Objective**: Analyze content added in the last 5 years
+```sql
+SELECT *
+FROM netflix
+WHERE TO_DATE(date_added, 'Month DD, YYYY') >= CURRENT_DATE - INTERVAL '5 years';
+```
+- **Insight**: A significant portion of content has been added recently, reflecting rapid platform growth
+
+### 7. Director Analysis
+- **Objective**: Identify content associated with a specific director
+```sql
+SELECT *
+FROM
+(
+SELECT *, UNNEST(STRING_TO_ARRAY(director, ',')) as director_name
+FROM netflix
+)
+WHERE director_name = 'Rajiv Chilaka';
+```
+- **Insight**: Enables deeper analysis of individual creator contributions
+
+### 8. TV Show Duration Analysis
+- **Objective**: Identify long-running TV shows
+```sql
+SELECT *
+FROM netflix
+WHERE type='TV Show' AND SPLIT_PART(duration, ' ', 1)::INT >5;
+```
+- **Insight**: Most shows have limited seasons, suggesting a preference for shorter series
+
+### 9. Genre Distribution Analysis
+- **Objective**: Analyze content distribution across genres
+```sql
+SELECT UNNEST(STRING_TO_ARRAY(listed_in, ',')) AS genre_name,COUNT(*) AS genre_count
+FROM netflix
+GROUP BY genre_name
+ORDER BY genre_name;
+```
+- **Insight**: Certain genres dominate the platform, reflecting audience preferences
+
+### 10. Country-Specific Trend Analysis (India)
+- **Objective**: Analyze yearly content production trends in India
+```sql
+SELECT country, release_year,COUNT(*) as num
+FROM netflix
+WHERE country='India'
+GROUP BY country,release_year
+ORDER BY num DESC
+LIMIT 5;
+```
+- **Insight**: Content production in India peaked around 2017–2019
+
+### 11. Genre-Based Content Filtering
+- **Objective**: Identify documentary movies
+```sql
+SELECT *
+FROM(
+	SELECT *, UNNEST(STRING_TO_ARRAY(listed_in, ',')) AS genre_name
+	FROM netflix
+	)
+WHERE type='Movie' AND genre_name='Documentaries';
+```
+- **Insight**: Documentary content forms a niche but important segment
+
+### 12. Missing Data Analysis
+- **Objective**: Identify content with missing director information
+```sql
+SELECT *
+FROM netflix
+WHERE director IS NULL;
+```
+- **Insight**: Missing metadata may impact recommendation quality and analysis accuracy
+
+### 13. Actor-Based Trend Analysis
+- **Objective**: Analyze recent activity of a specific actor (e.g., Salman Khan)
+```sql
+SELECT release_year,COUNT(release_year) AS num
+FROM netflix
+WHERE type = 'Movie' 
+      AND casts like '%Salman Khan%' 
+	  AND TO_DATE(date_added, 'Month DD, YYYY') >= CURRENT_DATE - INTERVAL '10 years'
+GROUP BY release_year
+ORDER BY release_year DESC;
+```
+- **Insight**: Actor-level analysis helps understand popularity and content trends
+
+### 14. Top Actors Analysis
+- **Objective**: Identify top actors in Indian movie productions
+```sql
+SELECT UNNEST(STRING_TO_ARRAY(casts, ', ')) AS actor_name, COUNT(*) AS num
+FROM netflix
+WHERE type = 'Movie' AND country LIKE '%India%'
+GROUP BY actor_name
+ORDER BY num DESC  
+LIMIT 10;
+```
+- **Insight**: Highlights frequently featured actors in regional content
+
+### 15. Content Classification Analysis
+- **Objective**: Categorize content based on keywords in descriptions
+```sql
+SELECT
+CASE WHEN description LIKE '%kill%' OR description ILIKE '%violence%' THEN 'Bad'
+ELSE 'Good' END AS content_category, COUNT(*) AS total_num
+FROM netflix
+GROUP BY content_category
+ORDER BY content_category;
+```
+- **Insight**: The majority of content falls into the “non-violent” category, indicating broad audience targeting
