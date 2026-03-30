@@ -228,3 +228,27 @@ GROUP BY content_category
 ORDER BY content_category;
 ```
 - **Insight**: The majority of content falls into the “non-violent” category, indicating broad audience targeting
+
+## Key Findings
+1. **Content Distribution**:
+   - Movies dominate the Netflix catalog (≈70%), indicating a strategic focus on standalone content rather than episodic TV series.
+2. **Audience Targeting**:
+   - Most content carries a “TV-MA” rating, reflecting a significant proportion of mature-audience material.
+3. **Geographical Trends**:
+   - The U.S. leads in content production, but India, the U.K., Japan, and South Korea are emerging markets with growing contributions.
+4. **Production & Release Patterns**:
+   - Content production has increased sharply since 2015, showing Netflix’s aggressive global expansion strategy.
+5. **Genre & Actor Insights**:
+   - Certain genres dominate the catalog, while analysis of actor appearances highlights recurring talent in specific regions (e.g., India).
+6. **Content Characteristics**:
+   - Movies tend to have standard durations; TV shows generally have fewer than 5 seasons, reflecting a preference for shorter series formats.
+   - Keyword-based content classification shows most titles are “non-violent,” suggesting broad audience targeting.
+
+## Conclusion
+- Netflix’s catalog reflects a strategic emphasis on scalable, globally accessible content, with a strong presence of mature and mainstream entertainment.
+- Insights from this analysis can inform content acquisition, regional expansion, and audience segmentation strategies.
+- The project demonstrates SQL proficiency, data cleaning, exploratory analysis, and business-driven insight extraction, bridging technical skills with decision-making relevance.
+
+## Author - Zixuan Zhang
+This project is part of my portfolio, showcasing the SQL skills essential for data analyst roles.
+- **LinkedIn**: [My Professional Profile](https://www.linkedin.com/in/zixuan-zhang-78ba38274)
