@@ -49,6 +49,7 @@ CREATE TABLE netflix
 ```
 
 ## Business Problems and Solutions
+
 These analyses demonstrate SQL proficiency in handling real-world datasets, including data cleaning, transformation, and business-driven insights generation.
 ### 1. Content Distribution Analysis
 - **Objective**: Evaluate the distribution of Movies vs TV Shows on Netflix
@@ -230,6 +231,7 @@ ORDER BY content_category;
 - **Insight**: The majority of content falls into the “non-violent” category, indicating broad audience targeting
 
 ## Key Findings
+
 1. **Content Distribution**:
    - Movies dominate the Netflix catalog (≈70%), indicating a strategic focus on standalone content rather than episodic TV series.
 2. **Audience Targeting**:
@@ -245,10 +247,12 @@ ORDER BY content_category;
    - Keyword-based content classification shows most titles are “non-violent,” suggesting broad audience targeting.
 
 ## Conclusion
+
 - Netflix’s catalog reflects a strategic emphasis on scalable, globally accessible content, with a strong presence of mature and mainstream entertainment.
 - Insights from this analysis can inform content acquisition, regional expansion, and audience segmentation strategies.
 - The project demonstrates SQL proficiency, data cleaning, exploratory analysis, and business-driven insight extraction, bridging technical skills with decision-making relevance.
 
 ## Author - Zixuan Zhang
+
 This project is part of my portfolio, showcasing the SQL skills essential for data analyst roles.
 - **LinkedIn**: [My Professional Profile](https://www.linkedin.com/in/zixuan-zhang-78ba38274)
